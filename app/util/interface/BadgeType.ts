@@ -1,5 +1,5 @@
-export type BadgeType =  "minimal" | "cozy" | "compact";
-export const badgeType: BadgeType[] = ["minimal", "cozy", "compact"];
+export type BadgeType = "cozy" | "compact" | "minimal";
+export const badgeType: BadgeType[] = ["cozy", "compact", "minimal"];
 
 export interface Category {
     "value": string,
