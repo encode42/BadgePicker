@@ -17,6 +17,7 @@ import LazyLoad, { forceCheck } from "react-lazyload";
 // - Fix copy modal mobile
 // - Improve prism visuals
 // - So much cleanup
+// - Fix lazyload not loading images on tab change
 
 interface SelectedStorage {
     "type"?: BadgeType,
@@ -43,7 +44,7 @@ interface LoaderResult {
     "urls": URLs
 }
 
-const rawPrefix = "https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@2/assets";
+const rawPrefix = "https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets";
 
 function DarkPaper({ children }: PropsWithChildren) {
     return (

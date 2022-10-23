@@ -21,6 +21,11 @@ interface DocumentProps extends BasicDocumentProps {
 
 export function meta() {
     return {
+        "title": details.name,
+        "description": "An easily browsable index of Devin's Badges.",
+        "og:image": "https://cdn.jsdelivr.net/gh/intergrav/devins-badges-docs/src/assets/images/website-logo_512h.png",
+        "twitter:card": "summary",
+        "theme-color": "#e8590c",
         "charset": "utf-8",
         "viewport": "width=device-width,initial-scale=1"
     } as MetaDescriptor;
@@ -29,12 +34,25 @@ export function meta() {
 export function links() {
     return [{
         "rel": "icon",
-        "href": "/favicon/favicon.svg",
-        "type": "image/svg+xml"
+        "sizes": "32x32",
+        "href": "/favicon/favicon-32x32.png",
+        "type": "image/png"
     }, {
         "rel": "icon",
-        "href": "/favicon/favicon.png",
+        "sizes": "16x16",
+        "href": "/favicon/favicon-16x16.png",
         "type": "image/png"
+    }, {
+        "rel": "apple-touch-icon",
+        "sizes": "180x180",
+        "href": "/favicon/apple-touch-icon.png"
+    }, {
+        "rel": "mask-icon",
+        "href": "/favicon/safari-pinned-tab.svg",
+        "color": "#40c057"
+    }, {
+        "rel": "manifest",
+        "href": "/favicon/site.webmanifest"
     }];
 }
 
