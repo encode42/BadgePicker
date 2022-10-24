@@ -18,6 +18,8 @@ import LazyLoad, { forceCheck } from "react-lazyload";
 // - Improve prism visuals
 // - So much cleanup
 // - Fix lazyload not loading images on tab change
+// - Cloudflare broke modals?
+// - Automatically update when repo updates
 
 interface SelectedStorage {
     "type"?: BadgeType,
