@@ -1,4 +1,5 @@
 import { Category, File } from "~/util/interface/BadgeType";
+import { getEnv } from "~/util/getEnv.server";
 
 let categories: Category[];
 
@@ -28,8 +29,8 @@ async function getContents(path: string, token: string): Promise<Record<string, 
     return await request.json();
 }
 
-export async function updateCategories(token: string) {
-    const contents = await getContents("assets/cozy", token);
+export async function updateCategories() {
+    const contents = await getContents("assets/cozy", getEnv("GITHUB_TOKEN", "unset"));
 
     const newCategories: Category[] = [];
     for await (const content of contents) {
@@ -39,7 +40,7 @@ export async function updateCategories(token: string) {
 
         const files: File[] = [];
 
-        const categoryContents = await getContents(content.path, token);
+        const categoryContents = await getContents(content.path, getEnv("GITHUB_TOKEN", "unset"));
         for (const categoryContent of categoryContents) {
             if (!categoryContent.name.endsWith(".svg")) {
                 continue;

@@ -1,7 +1,7 @@
-import { Accordion, ActionIcon, Anchor, Code, Container, Group, Image, Modal, Paper, SimpleGrid, Stack, Tabs, Text, TextInput, Title, useMantineTheme } from "@mantine/core";
+import { Accordion, ActionIcon, Anchor, Code, Group, Image, Modal, SimpleGrid, Stack, Tabs, Text, TextInput, Title, useMantineTheme } from "@mantine/core";
 import { StandardLayout } from "~/layout/StandardLayout";
 import { useLoaderData } from "@remix-run/react";
-import { PropsWithChildren, useState } from "react";
+import { useState } from "react";
 import { details } from "~/data/details";
 import { BadgeType, badgeType, Category, File } from "~/util/interface/BadgeType";
 import { categories, updateCategories } from "~/util/categories.server";
@@ -10,6 +10,7 @@ import { IconBrandHtml5, IconCode, IconMarkdown, IconSearch } from "@tabler/icon
 import { config } from "~/data/config";
 import { Prism } from "@mantine/prism";
 import LazyLoad, { forceCheck } from "react-lazyload";
+import { ThemePaper } from "@encode42/mantine-extras";
 
 // TODO:
 // - Search
@@ -18,7 +19,6 @@ import LazyLoad, { forceCheck } from "react-lazyload";
 // - Improve prism visuals
 // - So much cleanup
 // - Fix lazyload not loading images on tab change
-// - Cloudflare broke modals?
 // - Automatically update when repo updates
 
 interface SelectedStorage {
@@ -48,19 +48,9 @@ interface LoaderResult {
 
 const rawPrefix = "https://cdn.jsdelivr.net/gh/intergrav/devins-badges/assets";
 
-function DarkPaper({ children }: PropsWithChildren) {
-    return (
-        <Paper p="md" withBorder sx={theme => ({
-            "background": theme.colors.dark[9]
-        })}>
-            {children}
-        </Paper>
-    );
-}
-
-export async function loader({ context }): Promise<LoaderResult> {
+export async function loader(): Promise<LoaderResult> {
     if (!categories) {
-        await updateCategories(context.GITHUB_TOKEN);
+        await updateCategories();
     }
 
     const urls: URLs = {};
@@ -103,7 +93,7 @@ export default function IndexPage() {
         <>
             <StandardLayout>
                 <Stack>
-                    <DarkPaper>
+                    <ThemePaper>
                         <Stack>
                             <Title align="center" color="orange" sx={{
                                 "fontSize": theme.fontSizes.xl * 2
@@ -111,7 +101,7 @@ export default function IndexPage() {
                             <Text size="lg" align="center">An easily browsable index of <Anchor href={details.links.devin}>Devin's Badges</Anchor>.</Text>
                             <Text color="dimmed" align="center">All content is dynamically generated. That explains any naming oddities!</Text>
                         </Stack>
-                    </DarkPaper>
+                    </ThemePaper>
                     <Group>
                         <TextInput disabled placeholder="Search" sx={{
                             "flexGrow": 1
@@ -146,7 +136,7 @@ export default function IndexPage() {
                                     <SimpleGrid cols={largeScreen ? 3 : undefined} verticalSpacing="xl">
                                         {category.files.map(file => (
                                             <LazyLoad key={file.value}>
-                                                <DarkPaper>
+                                                <ThemePaper>
                                                     <Stack>
                                                         <Group noWrap>
                                                             <Image src={data.urls[category.value][file.value].minimal} width={theme.spacing.xs * 5} />
@@ -204,7 +194,7 @@ export default function IndexPage() {
                                                             ))}
                                                         </Tabs>
                                                     </Stack>
-                                                </DarkPaper>
+                                                </ThemePaper>
                                             </LazyLoad>
                                         ))}
                                     </SimpleGrid>

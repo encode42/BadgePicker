@@ -1,11 +1,13 @@
-import { PropsWithChildren } from "react";
-import { Links, LiveReload, Meta, Outlet, Scripts, useCatch } from "@remix-run/react";
-import { ColorScheme, Divider, Global, MantineProvider } from "@mantine/core";
-import { StylesPlaceholder } from "@mantine/remix";
-import montserrat from "a/font/montserrat.ttf";
+import { PropsWithChildren, useState } from "react";
+import { Links, Meta, Outlet, Scripts, useCatch, useFetcher, useLoaderData } from "@remix-run/react";
+import { MetaDescriptor } from "@remix-run/node";
+import { ErrorPage, getResult, RouteRequest } from "@encode42/remix-extras";
 import { config } from "~/data/config";
+import { theme } from "~/util/theme.server";
+import { ColorScheme, ColorSchemeProvider, Global, MantineProvider } from "@mantine/core";
+import { StylesPlaceholder } from "@mantine/remix";
 import { details } from "~/data/details";
-import { MetaDescriptor } from "@remix-run/cloudflare";
+import montserrat from "a/font/montserrat.ttf";
 
 // TODO: Sitemap generator
 // TODO: Privacy policy / GDPR compliance
@@ -17,6 +19,11 @@ interface BasicDocumentProps extends PropsWithChildren {
 interface DocumentProps extends BasicDocumentProps {
     "title"?: string,
     "prefix"?: boolean
+}
+
+interface LoaderResult {
+    "theme": getResult,
+    "themeSetRoute": string
 }
 
 export function meta() {
@@ -59,6 +66,13 @@ export function links() {
 const fonts = {
     "montserrat": "Montserrat, sans-serif"
 };
+
+export async function loader({ request }: RouteRequest): Promise<LoaderResult> {
+    return {
+        "theme": await theme.get(request),
+        "themeSetRoute": theme.setRoute
+    };
+}
 
 export default function App() {
     return (
@@ -107,9 +121,48 @@ function BasicDocument({ colorScheme = config.colorScheme, children }: BasicDocu
 }
 
 function Document({ children }: DocumentProps) {
+    const data = useLoaderData<LoaderResult>();
+    const fetcher = useFetcher();
+
+    const [colorScheme, setColorScheme] = useState<ColorScheme>(data.theme.colorScheme);
+
+    function toggleColorScheme(value: ColorScheme) {
+        const newColorScheme = value ?? (colorScheme === "dark" ? "light" : "dark");
+        setColorScheme(newColorScheme);
+
+        fetcher.submit({
+            "colorScheme": newColorScheme
+        }, {
+            "method": "post",
+            "action": data.themeSetRoute
+        });
+    }
+
     return (
-        <BasicDocument colorScheme={config.colorScheme}>
-            {children}
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+            <BasicDocument colorScheme={colorScheme}>
+                {children}
+            </BasicDocument>
+        </ColorSchemeProvider>
+    );
+}
+
+export function CatchBoundary() {
+    const caught = useCatch();
+
+    return (
+        <BasicDocument>
+            <ErrorPage title={caught.statusText} statusCode={caught.status} />
+        </BasicDocument>
+    );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+    console.error(error);
+
+    return (
+        <BasicDocument>
+            <ErrorPage title={error.name} statusCode={500} />
         </BasicDocument>
     );
 }

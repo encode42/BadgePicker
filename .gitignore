@@ -1,7 +1,7 @@
 /node_modules
 
 /.cache
-/functions/
+/build
 /public/build
 
-.dev.vars
+.env

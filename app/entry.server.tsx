@@ -1,4 +1,4 @@
-import type { EntryContext } from "@remix-run/cloudflare";
+import type { EntryContext } from "@remix-run/node";
 import { renderToString } from "react-dom/server";
 import { RemixServer } from "@remix-run/react";
 import { createStylesServer, injectStyles } from "@mantine/remix";
